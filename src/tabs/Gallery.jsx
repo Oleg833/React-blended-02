@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { getImages } from 'service/image-service';
 
-import * as ImageService from 'service/image-service';
+// import * as ImageService from 'service/image-service';
 import {
   Button,
   SearchForm,
