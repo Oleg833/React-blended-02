@@ -33,6 +33,7 @@ export class SearchForm extends Component {
           placeholder="What do you want to write?"
           name="search"
           required
+          value={this.state.query}
           autoFocus
         />
       </SearchFormStyled>

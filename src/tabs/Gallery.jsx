@@ -2,7 +2,15 @@ import { Component } from 'react';
 import { getImages } from 'service/image-service';
 
 import * as ImageService from 'service/image-service';
-import { Button, SearchForm, Grid, GridItem, Text, CardItem } from 'components';
+import {
+  Button,
+  SearchForm,
+  Grid,
+  GridItem,
+  Text,
+  CardItem,
+  Loader,
+} from 'components';
 
 export class Gallery extends Component {
   state = {
@@ -10,22 +18,45 @@ export class Gallery extends Component {
     page: 1,
     images: [],
     showBtn: false,
+    isLoading: false,
+    isEmpty: false,
+    error: '',
   };
   componentDidUpdate(props, prevState) {
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      getImages(this.state.query, this.state.page).then(data => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...data.photos],
-          showBtn: this.state.page < Math.ceil(data.total_results / 15),
-        }));
-      });
+      this.setState({ isLoading: true });
+      getImages(this.state.query, this.state.page)
+        .then(data => {
+          if (!data.photos.length) {
+            this.setState({ isEmpty: true });
+            return;
+          }
+          this.setState(prevState => ({
+            images: [...prevState.images, ...data.photos],
+            showBtn: this.state.page < Math.ceil(data.total_results / 15),
+          }));
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ error: err.message });
+        })
+        .finally(() => {
+          this.setState({ isLoading: false });
+        });
     }
   }
   onSubmit = query => {
-    this.setState({ query, images: [], page: 1 });
+    this.setState({
+      query,
+      images: [],
+      page: 1,
+      isEmpty: false,
+      error: '',
+      showBtn: false,
+    });
   };
 
   loadMore = e => {
@@ -52,8 +83,11 @@ export class Gallery extends Component {
             Load more
           </Button>
         )}
-
-        <Text textAlign="center">Sorry. There are no images ... 😭</Text>
+        {this.state.isLoading && <Loader />}
+        {this.state.error && <Text textAlign="center">{this.state.error}</Text>}
+        {this.state.isEmpty && (
+          <Text textAlign="center">Sorry. There are no images ... 😭</Text>
+        )}
       </>
     );
   }
