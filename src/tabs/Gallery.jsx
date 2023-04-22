@@ -12,6 +12,8 @@ import {
   Loader,
 } from 'components';
 
+import { animateScroll } from 'react-scroll';
+
 export class Gallery extends Component {
   state = {
     query: '',
@@ -34,6 +36,7 @@ export class Gallery extends Component {
             this.setState({ isEmpty: true });
             return;
           }
+          // console.log(data);
           this.setState(prevState => ({
             images: [...prevState.images, ...data.photos],
             showBtn: this.state.page < Math.ceil(data.total_results / 15),
@@ -61,6 +64,15 @@ export class Gallery extends Component {
 
   loadMore = e => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.scrollOnMoreButton();
+  };
+
+  scrollOnMoreButton = () => {
+    animateScroll.scrollToBottom({
+      duration: 1000,
+      delay: 10,
+      smooth: 'linear',
+    });
   };
 
   render() {
