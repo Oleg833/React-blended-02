@@ -9,7 +9,7 @@ export class SearchForm extends Component {
   };
   handleInput = event => {
     // console.log(event.target.value);
-    // console.log(this);
+    console.log(this);
     this.setState({ query: event.target.value });
   };
 

@@ -25,6 +25,8 @@ export class Gallery extends Component {
     error: '',
   };
   componentDidUpdate(props, prevState) {
+    console.log('start DidUpdate');
+    console.log(this);
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
@@ -36,7 +38,7 @@ export class Gallery extends Component {
             this.setState({ isEmpty: true });
             return;
           }
-          // console.log(data);
+          console.log(data);
           this.setState(prevState => ({
             images: [...prevState.images, ...data.photos],
             showBtn: this.state.page < Math.ceil(data.total_results / 15),
